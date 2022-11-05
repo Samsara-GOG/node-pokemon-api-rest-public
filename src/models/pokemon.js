@@ -1,0 +1,148 @@
+const validTypes = [
+	'Plante',
+	'Poison',
+	'Feu',
+	'Eau',
+	'Insecte',
+	'Vol',
+	'Normal',
+	'Electrik',
+	'Fée',
+	'Combat',
+];
+
+module.exports = (sequelize, DataTypes) => {
+	return sequelize.define(
+		'Pokemon',
+		{
+			id: {
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				autoIncrement: true,
+			},
+			name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				unique: {
+					msg: 'Ce nom est déjà pris.',
+				},
+				validate: {
+					notEmpty: {
+						msg: 'Le nom ne peut pas être vide.',
+					},
+					min: {
+						args: [1],
+						msg: 'Le nom doit au moins contenir un caractère.',
+					},
+					max: {
+						args: [25],
+						msg: 'Le nom dépasse la limite des 25 caractères.',
+					},
+					// is: {
+					// 	args: ['^[A-Za-z0-9éè]{1,25}$', 'i'],
+					// 	msg: 'Le nom doit contenir uniquement entre 1 et 25 caractères alphanumériques.',
+					// },
+					notNull: { msg: 'Le nom est une propriété requise' },
+				},
+			},
+			hp: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				validate: {
+					isInt: {
+						msg: 'Utilisez uniquement des nombres entiers pour les points de vie.',
+					},
+					min: {
+						args: [0],
+						msg: 'Les points de vie ne peuvent pas être négatifs.',
+					},
+					max: {
+						args: [999],
+						msg: 'Les points de vie ne peuvent pas être supérieurs à 999.',
+					},
+					// is: {
+					// 	args: ['^[0-9]{0,999}$', 'i'],
+					// 	msg: 'Les points de vie sont limitées entre 0 et 999.',
+					// },
+					notNull: { msg: 'Les points de vie sont une propriété requise.' },
+				},
+			},
+			cp: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				validate: {
+					isInt: {
+						msg: 'Utilisez uniquement des nombres entiers pour les points de dégâts.',
+					},
+					min: {
+						args: [0],
+						msg: 'Les points de dégâts ne peuvent pas être négatifs.',
+					},
+					max: {
+						args: [99],
+						msg: 'Les points de dégâts ne peuvent pas être supérieurs à 99.',
+					},
+					// is: {
+					// 	args: ['^[0-9]{0,99}$', 'i'],
+					// 	msg: 'Les points de dégâts sont limitées entre 0 et 99.',
+					// },
+					notNull: { msg: 'Les points de dégâts sont une propriété requise.' },
+				},
+			},
+			picture: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				validate: {
+					isUrl: {
+						msg: "Utilisez uniquement une url valide pour l'image.",
+					},
+					notNull: { msg: "L'image est une propriété requise." },
+				},
+			},
+			types: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				get() {
+					return this.getDataValue('types').split(', ');
+				},
+				set(types) {
+					this.setDataValue('types', types.join());
+				},
+				validate: {
+					isTypesValid(value) {
+						if (!value) {
+							throw new Error('Un pokémon doit au moins avoir un type.');
+						}
+						if (value.split(',').length > 3) {
+							throw new Error(
+								'Un pokémon ne peut pas avoir plus de trois types.',
+							);
+						}
+						value.split(',').forEach((type) => {
+							if (!validTypes.includes(type)) {
+								throw new Error(
+									`Le type d'un pokémon doit appartenir à la liste suivante: ${validTypes}`,
+								);
+							}
+						});
+					},
+				},
+			},
+			color: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				validate: {
+					notEmpty: {
+						msg: 'La couleur ne peut pas être vide.',
+					},
+					notNull: { msg: 'Le nom est une propriété requise' },
+				},
+			},
+		},
+		{
+			timestamps: true,
+			createdAt: 'created',
+			updatedAt: false,
+		},
+	);
+};
