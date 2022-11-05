@@ -1,21 +1,38 @@
 # node-pokemon-api-rest
 Api Rest complète avec base de données contenant 12 pokemons de départ.
 
-API disponible sur : https://samsara.live/api-pokemon/
+Api réalisé en JavaScript, sous Express/Node.js, avec l'ORM Sequelize pour gérer les échanges avec la base de données MariaDB.
 
-Les routes :  
+Après avoir entré un identifiant et un mot de passe reconnus par l'Api, on récupère un token crypté. 
+Ce token permet d'envoyer des requêtes authentifiées et ainsi accéder à la récupération de tous les pokémons de la base de données (comme un pokédex), ou un seul, le modifier à sa guise ou en encore le supprimer. On peut aussi en créer un de toutes pièces, en respectant des règles de validation établis avec Sequelize côté modèle.
+
+API testable et disponible sur : https://samsara.live/api-pokemon/
+
+Les routes pour les requêtes  :  
+(images à venir)
+GET /api/pokemons  
+
+GET /api/pokemons/:id  
+
+PUT /api/pokemons/:id  
+
+DELETE /api/pokemons/:id  
+
+POST /api/pokemons  
+
+POST /api/login  
+
 https://samsara.live/api-pokemon/api/pokemons  
 https://samsara.live/api-pokemon/api/pokemons/:id  
 https://samsara.live/api-pokemon/api/login  
 
-
+      ****************
 Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
 Ce token est récupérable via l'API avec une requête POST sur https://samsara.live/api-pokemon/api/login.  
 
 Par exemple, en JavaScript via Node.js :
   
 I) on construit cette requête
-
 ```
  const request = require('request');
 
@@ -38,13 +55,12 @@ I) on construit cette requête
 ```
 
 I') Ou plus pratique sur Postman :
-
-1) Choisir Requête : **POST**
-2) Entrer cette url : [https://samsara.live/api-pokemon/api/pokemons](https://samsara.live/api-pokemon/api/pokemons)  
-3) Sélectionner l'onglet **Body**
-4) Sélectionner sur le bouton radio **Raw**
-5) Cliquer sur le formattage **JSON**
-6) Entrez dans le grand champ vide:  
+  1) Choisir Requête : **POST**
+  2) Entrer cette url : [https://samsara.live/api-pokemon/api/pokemons](https://samsara.live/api-pokemon/api/pokemons)  
+  3) Sélectionner l'onglet **Body**
+  4) Sélectionner sur le bouton radio **Raw**
+  5) Cliquer sur le formattage **JSON**
+  6) Entrez dans le grand champ vide:  
 
 ```
 {
@@ -79,6 +95,14 @@ En image :
 
   
 ***************************************************
+Installer le repository
+  `npm init`
+
+(Commande pour l'environnement de développement)
+  `npm run dev`
+
+(Commande pour l'environnement de production)
+  `npm run start`
 
 Pour reprendre le project et le personnaliser :  
 ## ! Nécessaire de créer un fichier .env !  
