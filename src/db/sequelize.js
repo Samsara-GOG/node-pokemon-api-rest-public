@@ -12,7 +12,7 @@ let login_username;
 
 if (process.env.NODE_ENV === 'production') {
 	sequelize = new Sequelize(
-		process.env.DB_TABLE_PROD,
+		process.env.DB_NAME_PROD,
 		process.env.DB_USER_PROD,
 		process.env.DB_PASSWORD_PROD,
 		{
@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === 'production') {
 	login_username = process.env.LOGIN_USERNAME_PROD;
 } else {
 	sequelize = new Sequelize(
-		process.env.DB_TABLE_DEV,
+		process.env.DB_NAME_DEV,
 		process.env.DB_USER_DEV,
 		process.env.DB_PASSWORD_DEV,
 		{
@@ -48,33 +48,40 @@ const Pokemon = PokemonModel(sequelize, DataTypes);
 const User = UserModel(sequelize, DataTypes);
 
 const initDb = () => {
-	return sequelize.sync(/*{ force: true } */).then(() => {
-		console.log('INIT DB');
-		pokemons.map((pokemon) => {
-			Pokemon.create({
-				name: pokemon.name,
-				hp: pokemon.hp,
-				cp: pokemon.cp,
-				picture: pokemon.picture,
-				types: pokemon.types,
-				color: pokemon.color,
-			})
-				.then((pokemon) => console.log(pokemon.toJSON()))
+	return sequelize
+		.sync()
+		.then(() => {
+			console.log('INIT DB');
+			pokemons.map((pokemon) => {
+				Pokemon.create({
+					name: pokemon.name,
+					hp: pokemon.hp,
+					cp: pokemon.cp,
+					picture: pokemon.picture,
+					types: pokemon.types,
+					color: pokemon.color,
+				})
+					.then((pokemon) => console.log(pokemon.toJSON()))
+					.catch((error) =>
+						console.error(`Erreur lors de la création d'un pokemon : ${error}`),
+					);
+			});
+
+			bcrypt
+				.hash(login_username, 10)
+				.then((hash) =>
+					User.create({ username: login_username, password: hash }),
+				)
+				.then((user) => console.log(user.toJSON()))
 				.catch((error) =>
-					console.error(`Erreur lors de la création d'un pokemon : ${error}`),
+					console.error(`Erreur lors de la création d'un user : ${error}`),
 				);
-		});
 
-		bcrypt
-			.hash(login_username, 10)
-			.then((hash) => User.create({ username: login_username, password: hash }))
-			.then((user) => console.log(user.toJSON()))
-			.catch((error) =>
-				console.error(`Erreur lors de la création d'un user : ${error}`),
-			);
-
-		console.log('La base de données a bien été initialisée !');
-	});
+			console.log('La base de données a bien été initialisée !');
+		})
+		.catch((error) =>
+			console.error(`Erreur lors de l'initialisation de la BDD : ${error}`),
+		);
 };
 
 module.exports = {

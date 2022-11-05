@@ -4,20 +4,30 @@ const favicon = require('serve-favicon');
 const sequelize = require('./src/db/sequelize');
 const cors = require('cors');
 
+require('dotenv').config();
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3031;
+
+const corsOptions = {
+	origin: `https://samsara.live/api-pokemon`, // prod namecheap
+};
 
 app
 	// .use(morgan('dev'))
 	.use(favicon(__dirname + '/favicon.ico'))
 	.use(express.urlencoded({ extended: true }))
 	.use(express.json())
-	.use(cors());
+	.use(cors(corsOptions));
 
 sequelize.initDb();
 
-app.get('/', (req, res) => {
-	res.json('Hello, Samsara ! 😻');
+app.get('/api-pokemon', (req, res) => {
+	res.json({ message: 'Welcome to API Pokemon.' }); // test message
+});
+
+app.get('/api-pokemon/lolo/:name', (req, res) => {
+	const name = req.params.name;
+	res.send(`Hello ${name}`);
 });
 
 // Ici nous placerons nos futurs points de terminaison.
