@@ -3,7 +3,7 @@ Api Rest complète avec BDD pokemons
 
 
 
-
+Pour reprendre le project et le personnaliser :
 ## ! Nécessaire de créer un fichier .env !
 
 Créer un fichier .env à la racine du projet, 
@@ -11,7 +11,7 @@ copier/coller les valeurs qui s'affichent ci-dessous,
 et attribuez vos propres valeurs pour les valeurs entre crochets.
 
 ## Début fichier .env
-
+```
 NODE_ENV="production"
 CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
 LOGIN_USERNAME_DEV="[usernameTest]"
@@ -30,7 +30,9 @@ DB_PASSWORD_PROD="[dbPasswordProd]"
 DB_DIALECT_PROD="[dbDialectProd]"
 DB_TIMEZONE_PROD="[timezoneProd]"
 DB_PORT=[dbPort]
-
+```
 ## Fin fichier .env
 
-- Ajouter ce fichier .env à .gitignore de votre projet
+- Ajouter ce fichier .env au fichier .gitignore de votre projet initié par Git.
+
+
