@@ -1,16 +1,96 @@
 # node-pokemon-api-rest
-Api Rest complète avec BDD pokemons
+Api Rest complète avec base de données contenant 12 pokemons de départ.
+
+API disponible sur : https://samsara.live/api-pokemon/
+
+Les routes :  
+https://samsara.live/api-pokemon/api/pokemons  
+https://samsara.live/api-pokemon/api/pokemons/:id  
+https://samsara.live/api-pokemon/api/login  
 
 
+Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
+Ce token est récupérable via l'API avec une requête POST sur https://samsara.live/api-pokemon/api/login.  
 
-Pour reprendre le project et le personnaliser :
-## ! Nécessaire de créer un fichier .env !
+Par exemple, en JavaScript via Node.js :
+  
+I) on construit cette requête
 
-Créer un fichier .env à la racine du projet, 
-copier/coller les valeurs qui s'affichent ci-dessous,
-et attribuez vos propres valeurs pour les valeurs entre crochets.
+```
+ const request = require('request');
 
-## Début fichier .env
+ const options = {  
+   'method': 'POST',
+   'url': 'https://samsara.live/api-pokemon/api/login',
+   'headers': {
+    'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "username": "[login]",    // pikachu
+      "password": "[password]"  // pikachu
+    })
+ };
+
+  request(options, function (error, response) {  
+      if (error) throw new Error(error);  
+      console.log(response.body);  
+  });  
+```
+
+I') Ou plus pratique sur Postman :
+
+1) Choisir Requête : **POST**
+2) Entrer cette url : [https://samsara.live/api-pokemon/api/pokemons](https://samsara.live/api-pokemon/api/pokemons)  
+3) Sélectionner l'onglet **Body**
+4) Sélectionner sur le bouton radio **Raw**
+5) Cliquer sur le formattage **JSON**
+6) Entrez dans le grand champ vide:  
+
+```
+{
+   "username": "pikachu",
+   "password": "pikachu"
+}
+```
+7) Cliquez sur **Send** pour envoyer la requête
+8) Copier le token qui s'affiche dans la réponse
+
+En image :  
+![Requête POST /api/login sous Postman](https://samsara.live/images/requete_post-login.jpg)
+
+ => si la connexion est réussie :
+```
+{
+  "message": "L'utilisateur a été connecté avec succès.",
+  "data": {
+      "id": 1,
+      "username": "pikachu",
+      "password": "$2b$10$3uguHpWx5WP/j8LLISHR9uucy8lHxLQTuH63krzj8n10IdfCIhcPy",
+      "createdAt": "2022-11-05T16:05:04.000Z",
+      "updatedAt": "2022-11-05T16:05:04.000Z"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NzY2NDQxMywiZXhwIjoxNjY3NzUwODEzfQ.CdKpCYDX1clyrYCNeXtIi4WNjlICg4jU1i9ElDVXQx4"
+}
+```
+
+=> Vous devez récupérer le token et l'inscrire dans le header de toutes vos requêtes sous cette forme :  
+
+![Requête avec token](https://samsara.live/images/requete_header-token.jpg)
+
+  
+***************************************************
+
+Pour reprendre le project et le personnaliser :  
+## ! Nécessaire de créer un fichier .env !  
+
+Créer un fichier .env à la racine du projet,  
+copier/coller le contenu du fichier qui s'affiche ci-dessous,  
+et personnaliser les valeurs en remplaçant les crochets par vos informations.  
+
+(si vous avez besoin de travailler dans un environnement dev et/ou prod,    
+modifier NODE_ENV="production" par NODE_ENV="development" et inversement).    
+
+## Début fichier .env  
 ```
 NODE_ENV="production"
 CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
@@ -34,5 +114,16 @@ DB_PORT=[dbPort]
 ## Fin fichier .env
 
 - Ajouter ce fichier .env au fichier .gitignore de votre projet initié par Git.
+
+- Il faut également personnaliser les routes de ces options/requêtes pour votre projet en fonction des besoins (dev/prod) :  
+    *(Ici avec mon hébergeur Namecheap, j'ai du ajouter à la base de chaque route, l'url de mon projet "/api-pokemon", pour qu'Express puisse fonctionner normalement en production)*
+
+  - (corsOptions.origin, app.get()) sur app.js, 
+  - (app.get()) sur ./src/routes/findAllPokemons.js,
+  - (app.post()) sur ./src/routes/createPokemon.js,  
+  - (app.put()) sur ./src/routes/updatePokemon.js
+  - (app.delete()) ./src/routes/deletePokemon.js,
+  - (app.get()) sur ./src/routes/findPokemonByPk.js,
+  - (app.post()) sur ./src/routes/login.js.js)
 
 
