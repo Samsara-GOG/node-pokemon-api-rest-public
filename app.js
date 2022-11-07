@@ -1,23 +1,34 @@
 const express = require('express');
-const morgan = require('morgan');
 const favicon = require('serve-favicon');
 const sequelize = require('./src/db/sequelize');
 const cors = require('cors');
 
+const morgan = require('morgan');
+
 require('dotenv').config();
+
 const app = express();
 const port = process.env.PORT || 3000;
-
 const corsOptions = {
 	origin: `https://localhost:${port}`,
 };
 
-app
-	.use(morgan('dev'))
-	.use(favicon(__dirname + '/favicon.ico'))
-	.use(express.urlencoded({ extended: true }))
-	.use(express.json())
-	.use(cors(corsOptions));
+if (process.env.NODE_ENV === 'development') {
+	const morgan = require('morgan');
+
+	app
+		.use(morgan('dev'))
+		.use(favicon(__dirname + '/favicon.ico'))
+		.use(express.urlencoded({ extended: true }))
+		.use(express.json())
+		.use(cors(corsOptions));
+} else {
+	app
+		.use(favicon(__dirname + '/favicon.ico'))
+		.use(express.urlencoded({ extended: true }))
+		.use(express.json())
+		.use(cors(corsOptions));
+}
 
 sequelize.initDb();
 

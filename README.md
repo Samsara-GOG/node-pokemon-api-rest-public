@@ -1,44 +1,134 @@
-# node-pokemon-api-rest
-Api Rest complète avec base de données contenant 12 pokemons de départ.
+# node-pokemon-api-rest-public
 
-Api réalisé en JavaScript, sous Express/Node.js, avec l'ORM Sequelize pour gérer les échanges avec la base de données MariaDB.
+Api Rest complète fonctionnant avec une base de données SQL contenant 12 pokemons de départ.
 
-Après avoir entré un identifiant et un mot de passe reconnus par l'Api, on récupère un token crypté. 
-Ce token permet d'envoyer des requêtes authentifiées et ainsi accéder à la récupération de tous les pokémons de la base de données (comme un pokédex), ou un seul, le modifier à sa guise ou en encore le supprimer. On peut aussi en créer un de toutes pièces, en respectant des règles de validation établis avec Sequelize côté modèle.
+Api réalisé en JavaScript, sous Express/Node.js, avec l'ORM Sequelize pour gérer les échanges avec la base de données SQL.
 
-API testable et disponible sur : https://samsara.live/api-pokemon/
+---
 
-Les routes pour les requêtes  :  
+(cloner le projet)
+
+Installer les dépendances du projet
+`npm install`
+
+(Commande pour exécuter le serveur dans l'environnement de développement)
+`npm run dev`
+
+(Commande pour exécuter le serveur dans l'environnement de production)
+`npm run start`
+
+L'exécution du projet nécessite au préalable la création d'une Base De Données SQL, afin de récupérer des infos de connexion (nom et dialecte de BDD, nom et mot de passe de l'utilisateur BDD).
+
+Et on utilise un fichier .env pour enregistrer ces données.
+
+## ! Nécessaire de créer un fichier .env !
+
+Créer un fichier .env à la racine dans le même dossier que `app.js`,  
+copier/coller le contenu du fichier qui s'affiche plus bas (à partir de "## Début du fichier"),  
+et personnaliser les valeurs en remplaçant les crochets par vos informations.
+
+Ex: (ici avec les valeurs)
+
+    NODE_ENV="development"
+
+    DB_HOST_DEV="localhost"
+    DB_NAME_DEV="pokedex"
+    DB_USER_DEV="root"
+    DB_PASSWORD_DEV="123456"
+    DB_DIALECT_DEV="mariadb"
+    DB_TIMEZONE_DEV="Etc/GMT-2"
+
+Si vous avez besoin de travailler dans un environnement dev ou prod,
+modifier cette variable
+
+`NODE_ENV="production"`
+
+par
+
+`NODE_ENV="development"`
+
+et inversement.
+
+## Début du contenu du fichier .env à créer,
+
+```
+NODE_ENV="development"
+
+CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
+LOGIN_USERNAME_DEV="[usernameTest]"
+LOGIN_USERNAME_PROD="[usernameTest]"
+
+DB_HOST_DEV="localhost"
+DB_NAME_DEV="[dbNameDev]"
+DB_USER_DEV="[dbUserDev]"
+DB_PASSWORD_DEV="[dbPasswordDev]"
+DB_DIALECT_DEV="[dbDialectDev]"
+DB_TIMEZONE_DEV="[timezoneDev]"
+
+DB_NAME_PROD="[dbNameProd]"
+DB_USER_PROD="[dbUserProd]"
+DB_PASSWORD_PROD="[dbPasswordProd]"
+DB_DIALECT_PROD="[dbDialectProd]"
+DB_TIMEZONE_PROD="[timezoneProd]"
+DB_PORT=[dbPort]
+```
+
+## Fin fichier .env
+
+- Ajouter ce fichier .env au fichier .gitignore de votre projet initié par Git, afin de sécuriser vos informations.
+
+- Il faut également peut-être personnaliser les routes des requêtes si vous déployer votre projet auprès d'un hébergeur :
+
+(Ici en prod avec un hébergeur Namecheap, il fallait par exemple ajouter à la base de chaque route, un bout d'url du projet hébergé ("/api-pokemon"), pour qu'Express puisse fonctionner normalement en production au niveau du routing)
+
+Les fichiers concernés par les routes :
+
+- (corsOptions.origin, app.get()) sur app.js,
+- (app.get()) sur ./src/routes/findAllPokemons.js,
+- (app.post()) sur ./src/routes/createPokemon.js,
+- (app.put()) sur ./src/routes/updatePokemon.js
+- (app.delete()) ./src/routes/deletePokemon.js,
+- (app.get()) sur ./src/routes/findPokemonByPk.js,
+- (app.post()) sur ./src/routes/login.js.js)
+
+---
+
+## Description de l'utilisation de l'API
+
+Après avoir entré un identifiant et un mot de passe reconnus par l'Api, on récupère un token crypté.
+Ce token permet d'envoyer des requêtes authentifiées et ainsi accéder à la récupération de tous les pokémons de la base de données, ou un seul, le modifier à sa guise ou en encore le supprimer. On peut aussi en créer un de toutes pièces, en respectant des règles de validation établis avec Sequelize côté modèle.
+
+Les routes pour les requêtes :
+
 (images à venir)
-GET /api/pokemons  
 
-GET /api/pokemons/:id  
+GET /api/pokemons
 
-PUT /api/pokemons/:id  
+GET /api/pokemons/:id
 
-DELETE /api/pokemons/:id  
+PUT /api/pokemons/:id
 
-POST /api/pokemons  
+DELETE /api/pokemons/:id
 
-POST /api/login  
+POST /api/pokemons
 
-https://samsara.live/api-pokemon/api/pokemons  
-https://samsara.live/api-pokemon/api/pokemons/:id  
-https://samsara.live/api-pokemon/api/login  
+POST /api/login
 
       ****************
+
 Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
-Ce token est récupérable via l'API avec une requête POST sur https://samsara.live/api-pokemon/api/login.  
+En mode de développement, ce token est récupérable via l'API avec une requête POST sur https://localhost:3000/api-pokemon/api/login avec l'utilisateur `pikachu` et le mot de passe `pikachu`.
 
 Par exemple, en JavaScript via Node.js :
-  
-I) on construit cette requête
+
+I) on construit cette requête :
+
 ```
  const request = require('request');
 
- const options = {  
+ const options = {
    'method': 'POST',
-   'url': 'https://samsara.live/api-pokemon/api/login',
+   'url': 'https://localhost:3000/api/login',
    'headers': {
     'Content-Type': 'application/json'
     },
@@ -48,19 +138,20 @@ I) on construit cette requête
     })
  };
 
-  request(options, function (error, response) {  
-      if (error) throw new Error(error);  
-      console.log(response.body);  
-  });  
+  request(options, function (error, response) {
+      if (error) throw new Error(error);
+      console.log(response.body);
+  });
 ```
 
 I') Ou plus pratique sur Postman :
-  1) Choisir Requête : **POST**
-  2) Entrer cette url : [https://samsara.live/api-pokemon/api/pokemons](https://samsara.live/api-pokemon/api/pokemons)  
-  3) Sélectionner l'onglet **Body**
-  4) Sélectionner sur le bouton radio **Raw**
-  5) Cliquer sur le formattage **JSON**
-  6) Entrez dans le grand champ vide:  
+
+1. Choisir Requête : **POST**
+2. Entrer cette url : [https://localhost:3000/api/pokemons](https://localhost:3000/api/pokemons)
+3. Sélectionner l'onglet **Body**
+4. Sélectionner sur le bouton radio **Raw**
+5. Cliquer sur le formattage **JSON**
+6. Entrez dans le grand champ vide:
 
 ```
 {
@@ -68,13 +159,15 @@ I') Ou plus pratique sur Postman :
    "password": "pikachu"
 }
 ```
-7) Cliquez sur **Send** pour envoyer la requête
-8) Copier le token qui s'affiche dans la réponse
+
+7. Cliquez sur **Send** pour envoyer la requête
+8. Copier le token qui s'affiche dans la réponse
 
 En image :  
 ![Requête POST /api/login sous Postman](https://samsara.live/images/requete_post-login.jpg)
 
- => si la connexion est réussie :
+=> si la connexion est réussie :
+
 ```
 {
   "message": "L'utilisateur a été connecté avec succès.",
@@ -89,65 +182,6 @@ En image :
 }
 ```
 
-=> Vous devez récupérer le token et l'inscrire dans le header de toutes vos requêtes sous cette forme :  
+=> Vous devez récupérer le token et l'inscrire dans le header de toutes vos requêtes sous cette forme :
 
 ![Requête avec token](https://samsara.live/images/requete_header-token.jpg)
-
-  
-***************************************************
-Installer le repository
-  `npm init`
-
-(Commande pour l'environnement de développement)
-  `npm run dev`
-
-(Commande pour l'environnement de production)
-  `npm run start`
-
-Pour reprendre le project et le personnaliser :  
-## ! Nécessaire de créer un fichier .env !  
-
-Créer un fichier .env à la racine du projet,  
-copier/coller le contenu du fichier qui s'affiche ci-dessous,  
-et personnaliser les valeurs en remplaçant les crochets par vos informations.  
-
-(si vous avez besoin de travailler dans un environnement dev et/ou prod,    
-modifier NODE_ENV="production" par NODE_ENV="development" et inversement).    
-
-## Début fichier .env  
-```
-NODE_ENV="production"
-CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
-LOGIN_USERNAME_DEV="[usernameTest]"
-LOGIN_USERNAME_PROD="[usernameTest]"
-
-DB_HOST_DEV="localhost" 
-DB_NAME_DEV="[dbNameDev]"
-DB_USER_DEV="[dbUserDev]"
-DB_PASSWORD_DEV="[dbPasswordDev]"
-DB_DIALECT_DEV="[dbDialectDev]"
-DB_TIMEZONE_DEV="[timezoneDev]" #ex: DB_TIMEZONE_DEV="Etc/GMT-2" pour la France
-
-DB_NAME_PROD="[dbNameProd]"
-DB_USER_PROD="[dbUserProd]"
-DB_PASSWORD_PROD="[dbPasswordProd]"
-DB_DIALECT_PROD="[dbDialectProd]"
-DB_TIMEZONE_PROD="[timezoneProd]"
-DB_PORT=[dbPort]
-```
-## Fin fichier .env
-
-- Ajouter ce fichier .env au fichier .gitignore de votre projet initié par Git.
-
-- Il faut également personnaliser les routes de ces options/requêtes pour votre projet en fonction des besoins (dev/prod) :  
-    *(Ici avec mon hébergeur Namecheap, j'ai du ajouter à la base de chaque route, l'url de mon projet "/api-pokemon", pour qu'Express puisse fonctionner normalement en production)*
-
-  - (corsOptions.origin, app.get()) sur app.js, 
-  - (app.get()) sur ./src/routes/findAllPokemons.js,
-  - (app.post()) sur ./src/routes/createPokemon.js,  
-  - (app.put()) sur ./src/routes/updatePokemon.js
-  - (app.delete()) ./src/routes/deletePokemon.js,
-  - (app.get()) sur ./src/routes/findPokemonByPk.js,
-  - (app.post()) sur ./src/routes/login.js.js)
-
-
