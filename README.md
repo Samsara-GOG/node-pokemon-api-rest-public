@@ -16,26 +16,28 @@ Je décris plus bas l'exécution des requêtes.
 
 (cloner le projet)
 
-Installer les dépendances du projet
+## Installer les dépendances du projet
 `npm install`
 
-(Exécuter le serveur en développement)
+## Lancer le serveur en développement
 `npm run dev`
 
-(Exécuter le serveur en production)
+## Lancer le serveur en production
 `npm run start`
 
-L'exécution du projet nécessite au préalable la création d'une Base De Données SQL, afin de récupérer des infos de connexion pour Sequelize (nom et dialecte de BDD, nom et mot de passe de l'utilisateur BDD).
+***
+
+L'exécution du projet nécessite au préalable la création d'une Base De Données SQL, afin de récupérer des infos de connexion pour Sequelize (nom et dialecte de BDD, nom et mot de passe de l'utilisateur BDD, etc.).
 
 Et on utilise un fichier .env pour enregistrer et sécuriser ces données.
 
 ## ! Nécessaire de créer un fichier .env !
 
 Créer un fichier .env à la racine du projet, dans le même dossier que `app.js`,  
-copier/coller le contenu du fichier qui s'affiche plus bas (à partir de "## Début du fichier"),  
+copier/coller le contenu du fichier qui s'affiche plus bas (à partir de "**Début du contenu du fichier...**"),  
 et personnaliser les valeurs en remplaçant les crochets par vos informations.
 
-Ex: (ici avec des valeurs définies pour le développement)
+Exemple : (ici avec des valeurs définies pour le développement)
 
     NODE_ENV="development"
 
@@ -47,45 +49,55 @@ Ex: (ici avec des valeurs définies pour le développement)
     DB_TIMEZONE_DEV="Etc/GMT-2"
 
 Si vous avez besoin de travailler dans un environnement dev ou prod,
-modifier cette variable
+modifier cette variable :
 
-`NODE_ENV="production"`
+`NODE_ENV="production"`,
 
-par
+par :
 
-`NODE_ENV="development"`
+`NODE_ENV="development"`,
 
 et inversement.
 
-## Début du contenu du fichier .env à créer,
+La valeur de la variable `CUSTOM_PRIVATE_KEY` est utilisée par l'Api en tant que chaîne secrète pour créer et décoder le token d'authentification à la création/connexion de l'utilisateur. Il est donc conseillé de choisir une valeur de chaînes assez complexe pour sécuriser le mot de passe.
 
-    ```
-    NODE_ENV="development"
+Exemple de valeur :  
+  `CUSTOM_PRIVATE_KEY = "r*RMTL#aWy$uhPUw@^i^A9*uki8z9$DC^*nc3#!R@fc"`  
 
-    CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
-    LOGIN_USERNAME_DEV="[usernameTest]"
-    LOGIN_USERNAME_PROD="[usernameTest]"
+La valeur de la variable `LOGIN_USERNAME_DEV` et sa consoeur `..._PROD` sert à créer automatiquement un compte utilisateur authentifié à l'initiation de la base de données, et à tester l'authentification pour l'exécution des requêtes.
 
-    DB_HOST_DEV="localhost"
-    DB_NAME_DEV="[dbNameDev]"
-    DB_USER_DEV="[dbUserDev]"
-    DB_PASSWORD_DEV="[dbPasswordDev]"
-    DB_DIALECT_DEV="[dbDialectDev]"
-    DB_TIMEZONE_DEV="[timezoneDev]"
+Exemple de valeur :   
+  `LOGIN_USERNAME_DEV = "pikachu"`  
 
-    DB_NAME_PROD="[dbNameProd]"
-    DB_USER_PROD="[dbUserProd]"
-    DB_PASSWORD_PROD="[dbPasswordProd]"
-    DB_DIALECT_PROD="[dbDialectProd]"
-    DB_TIMEZONE_PROD="[timezoneProd]"
-    DB_PORT=[dbPort]
-    ```
+## Début du contenu du fichier .env à créer :
+```
+NODE_ENV="development"
 
+CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
+LOGIN_USERNAME_DEV="[usernameTest]"
+LOGIN_USERNAME_PROD="[usernameTest]"
+
+DB_HOST_DEV="localhost"
+DB_NAME_DEV="[dbNameDev]"
+DB_USER_DEV="[dbUserDev]"
+DB_PASSWORD_DEV="[dbPasswordDev]"
+DB_DIALECT_DEV="[dbDialectDev]"
+DB_TIMEZONE_DEV="[timezoneDev]"
+
+DB_NAME_PROD="[dbNameProd]"
+DB_USER_PROD="[dbUserProd]"
+DB_PASSWORD_PROD="[dbPasswordProd]"
+DB_DIALECT_PROD="[dbDialectProd]"
+DB_TIMEZONE_PROD="[timezoneProd]"
+DB_PORT=[dbPort]
+```
 ## Fin du fichier .env
 
 - Il faut également peut-être personnaliser les routes des requêtes si vous déployer votre projet auprès d'un hébergeur :
 
-Ici en prod avec un hébergeur comme Namecheap, il fallait par exemple ajouter à la base de chaque route, un bout d'url du projet hébergé ("/api-pokemon") pour qu'Express puisse fonctionner normalement en production au niveau du routing.
+*Ici en prod avec un hébergeur comme Namecheap, 
+il fallait par exemple ajouter à la base de chaque route, un bout d'url du projet hébergé ("/api-pokemon") 
+pour qu'Express puisse fonctionner normalement en production au niveau du routing.*
 
 Les requêtes de routage concernées avec leurs fichiers :
 
@@ -103,7 +115,7 @@ Les requêtes de routage concernées avec leurs fichiers :
 
 - `app.post()` sur `./src/routes/login.js.js`
 
----
+*********
 
 ## Description de l'utilisation de l'API
 
@@ -111,7 +123,7 @@ Après avoir entré un identifiant et un mot de passe reconnus par l'Api, on ré
 Ce token permet d'envoyer des requêtes authentifiées à l'API, et ainsi accéder à la récupération de tous les pokémons de la base de données, ou un seul, le modifier à sa guise ou en encore le supprimer.  
 On peut aussi en créer un de toutes pièces, en respectant des règles de validation établis avec Sequelize côté modèle.
 
-L'Api informe l'utilisateur à chaque requête erronée, avec une validation métier et des contraintes, en précisant à chaque le type d'erreur (400, 401, 404, 500, 501) pour informer au maximum l'utilisateur.
+L'Api informe l'utilisateur à chaque requête erronée, avec une validation métier et des contraintes, en précisant à chaque fois le type d'erreur (400, 401, 404, 500, 501) pour informer au maximum l'utilisateur et l'aider à corriger sa requête.
 
 Les routes pour les requêtes :
 
@@ -132,7 +144,9 @@ POST /api/login
       ****************
 
 Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
-En mode de développement, ce token est récupérable via l'API avec une requête POST sur https://localhost:3000/api-pokemon/api/login avec l'utilisateur `pikachu` et le mot de passe `pikachu`.
+En mode de développement, ce token est récupérable via l'API avec une requête POST sur   
+  `https://localhost:3000/api-pokemon/api/login`,
+  avec l'utilisateur `pikachu` et le mot de passe `pikachu`.
 
 Par exemple, en JavaScript via Node.js :
 
