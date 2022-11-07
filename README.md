@@ -2,32 +2,40 @@
 
 Api Rest complète fonctionnant avec une base de données SQL contenant 12 pokemons de départ.
 
-Api réalisé en JavaScript, sous Express/Node.js, avec l'ORM Sequelize pour gérer les échanges avec la base de données SQL.
+Api réalisée en JavaScript, sous Express/Node.js, avec l'ORM Sequelize pour gérer les échanges avec la base de données SQL.
 
----
+L'Api est directement testable en ligne avec un outil comme Postman avec ces urls/routes :
+
+https://samsara.live/api-pokemon/api/pokemons  
+https://samsara.live/api-pokemon/api/pokemons/:id  
+https://samsara.live/api-pokemon/api/login
+
+Je décris plus bas l'exécution des requêtes.
+
+## Récupération du projet de l'Api Rest Pokemon
 
 (cloner le projet)
 
 Installer les dépendances du projet
 `npm install`
 
-(Commande pour exécuter le serveur dans l'environnement de développement)
+(Exécuter le serveur en développement)
 `npm run dev`
 
-(Commande pour exécuter le serveur dans l'environnement de production)
+(Exécuter le serveur en production)
 `npm run start`
 
-L'exécution du projet nécessite au préalable la création d'une Base De Données SQL, afin de récupérer des infos de connexion (nom et dialecte de BDD, nom et mot de passe de l'utilisateur BDD).
+L'exécution du projet nécessite au préalable la création d'une Base De Données SQL, afin de récupérer des infos de connexion pour Sequelize (nom et dialecte de BDD, nom et mot de passe de l'utilisateur BDD).
 
-Et on utilise un fichier .env pour enregistrer ces données.
+Et on utilise un fichier .env pour enregistrer et sécuriser ces données.
 
 ## ! Nécessaire de créer un fichier .env !
 
-Créer un fichier .env à la racine dans le même dossier que `app.js`,  
+Créer un fichier .env à la racine du projet, dans le même dossier que `app.js`,  
 copier/coller le contenu du fichier qui s'affiche plus bas (à partir de "## Début du fichier"),  
 et personnaliser les valeurs en remplaçant les crochets par vos informations.
 
-Ex: (ici avec les valeurs)
+Ex: (ici avec des valeurs définies pour le développement)
 
     NODE_ENV="development"
 
@@ -51,52 +59,59 @@ et inversement.
 
 ## Début du contenu du fichier .env à créer,
 
-```
-NODE_ENV="development"
+    ```
+    NODE_ENV="development"
 
-CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
-LOGIN_USERNAME_DEV="[usernameTest]"
-LOGIN_USERNAME_PROD="[usernameTest]"
+    CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
+    LOGIN_USERNAME_DEV="[usernameTest]"
+    LOGIN_USERNAME_PROD="[usernameTest]"
 
-DB_HOST_DEV="localhost"
-DB_NAME_DEV="[dbNameDev]"
-DB_USER_DEV="[dbUserDev]"
-DB_PASSWORD_DEV="[dbPasswordDev]"
-DB_DIALECT_DEV="[dbDialectDev]"
-DB_TIMEZONE_DEV="[timezoneDev]"
+    DB_HOST_DEV="localhost"
+    DB_NAME_DEV="[dbNameDev]"
+    DB_USER_DEV="[dbUserDev]"
+    DB_PASSWORD_DEV="[dbPasswordDev]"
+    DB_DIALECT_DEV="[dbDialectDev]"
+    DB_TIMEZONE_DEV="[timezoneDev]"
 
-DB_NAME_PROD="[dbNameProd]"
-DB_USER_PROD="[dbUserProd]"
-DB_PASSWORD_PROD="[dbPasswordProd]"
-DB_DIALECT_PROD="[dbDialectProd]"
-DB_TIMEZONE_PROD="[timezoneProd]"
-DB_PORT=[dbPort]
-```
+    DB_NAME_PROD="[dbNameProd]"
+    DB_USER_PROD="[dbUserProd]"
+    DB_PASSWORD_PROD="[dbPasswordProd]"
+    DB_DIALECT_PROD="[dbDialectProd]"
+    DB_TIMEZONE_PROD="[timezoneProd]"
+    DB_PORT=[dbPort]
+    ```
 
-## Fin fichier .env
-
-- Ajouter ce fichier .env au fichier .gitignore de votre projet initié par Git, afin de sécuriser vos informations.
+## Fin du fichier .env
 
 - Il faut également peut-être personnaliser les routes des requêtes si vous déployer votre projet auprès d'un hébergeur :
 
-(Ici en prod avec un hébergeur Namecheap, il fallait par exemple ajouter à la base de chaque route, un bout d'url du projet hébergé ("/api-pokemon"), pour qu'Express puisse fonctionner normalement en production au niveau du routing)
+Ici en prod avec un hébergeur comme Namecheap, il fallait par exemple ajouter à la base de chaque route, un bout d'url du projet hébergé ("/api-pokemon") pour qu'Express puisse fonctionner normalement en production au niveau du routing.
 
-Les fichiers concernés par les routes :
+Les requêtes de routage concernées avec leurs fichiers :
 
-- (corsOptions.origin, app.get()) sur app.js,
-- (app.get()) sur ./src/routes/findAllPokemons.js,
-- (app.post()) sur ./src/routes/createPokemon.js,
-- (app.put()) sur ./src/routes/updatePokemon.js
-- (app.delete()) ./src/routes/deletePokemon.js,
-- (app.get()) sur ./src/routes/findPokemonByPk.js,
-- (app.post()) sur ./src/routes/login.js.js)
+- `corsOptions.origin`, `app.get()` sur `app.js`,
+
+- `app.get()` sur `./src/routes/findAllPokemons.js`,
+
+- `app.post()` sur `./src/routes/createPokemon.js`,
+
+- `app.put()` sur `./src/routes/updatePokemon.js`,
+
+- `app.delete()` sur `./src/routes/deletePokemon.js`,
+
+- `app.get()` sur `./src/routes/findPokemonByPk.js`,
+
+- `app.post()` sur `./src/routes/login.js.js`
 
 ---
 
 ## Description de l'utilisation de l'API
 
-Après avoir entré un identifiant et un mot de passe reconnus par l'Api, on récupère un token crypté.
-Ce token permet d'envoyer des requêtes authentifiées et ainsi accéder à la récupération de tous les pokémons de la base de données, ou un seul, le modifier à sa guise ou en encore le supprimer. On peut aussi en créer un de toutes pièces, en respectant des règles de validation établis avec Sequelize côté modèle.
+Après avoir entré un identifiant et un mot de passe reconnus par l'Api, on récupère un token crypté.  
+Ce token permet d'envoyer des requêtes authentifiées à l'API, et ainsi accéder à la récupération de tous les pokémons de la base de données, ou un seul, le modifier à sa guise ou en encore le supprimer.  
+On peut aussi en créer un de toutes pièces, en respectant des règles de validation établis avec Sequelize côté modèle.
+
+L'Api informe l'utilisateur à chaque requête erronée, avec une validation métier et des contraintes, en précisant à chaque le type d'erreur (400, 401, 404, 500, 501) pour informer au maximum l'utilisateur.
 
 Les routes pour les requêtes :
 
