@@ -90,6 +90,7 @@ DB_PASSWORD_DEV="[dbPasswordDev]"
 DB_DIALECT_DEV="[dbDialectDev]"
 DB_TIMEZONE_DEV="[timezoneDev]"
 
+DB_HOST_PROD="[dbHostProd]" 
 DB_NAME_PROD="[dbNameProd]"
 DB_USER_PROD="[dbUserProd]"
 DB_PASSWORD_PROD="[dbPasswordProd]"
