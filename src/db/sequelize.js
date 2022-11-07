@@ -9,6 +9,7 @@ require('dotenv').config();
 
 let sequelize;
 let login_username;
+let login_password;
 
 if (process.env.NODE_ENV === 'production') {
 	sequelize = new Sequelize(
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === 'production') {
 	);
 
 	login_username = process.env.LOGIN_USERNAME_PROD;
+	login_password = process.env.LOGIN_PASSWORD_PROD;
 } else {
 	sequelize = new Sequelize(
 		process.env.DB_NAME_DEV,
@@ -42,6 +44,7 @@ if (process.env.NODE_ENV === 'production') {
 	);
 
 	login_username = process.env.LOGIN_USERNAME_DEV;
+	login_password = process.env.LOGIN_PASSWORD_DEV;
 }
 
 const Pokemon = PokemonModel(sequelize, DataTypes);
@@ -68,7 +71,7 @@ const initDb = () => {
 			});
 
 			bcrypt
-				.hash(login_username, 10)
+				.hash(login_password, 10)
 				.then((hash) =>
 					User.create({ username: login_username, password: hash }),
 				)
