@@ -5,7 +5,7 @@ const { User } = require('../db/sequelize');
 const privateKey = require('../auth/private_key');
 
 module.exports = (app) => {
-	app.post('/api-pokemon/api/login', (req, res) => {
+	app.post('/api/login', (req, res) => {
 		// ...
 		User.findOne({ where: { username: req.body.username } }).then((user) => {
 			// ...

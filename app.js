@@ -1,19 +1,19 @@
 const express = require('express');
-// const morgan = require('morgan');
+const morgan = require('morgan');
 const favicon = require('serve-favicon');
 const sequelize = require('./src/db/sequelize');
 const cors = require('cors');
 
 require('dotenv').config();
 const app = express();
-const port = process.env.PORT || 3031;
+const port = process.env.PORT || 3000;
 
 const corsOptions = {
-	origin: `https://samsara.live/api-pokemon`, // prod namecheap
+	origin: `https://localhost:${port}`,
 };
 
 app
-	// .use(morgan('dev'))
+	.use(morgan('dev'))
 	.use(favicon(__dirname + '/favicon.ico'))
 	.use(express.urlencoded({ extended: true }))
 	.use(express.json())
@@ -21,11 +21,11 @@ app
 
 sequelize.initDb();
 
-app.get('/api-pokemon', (req, res) => {
+app.get('/', (req, res) => {
 	res.json({ message: 'Welcome to API Pokemon.' }); // test message
 });
 
-app.get('/api-pokemon/lolo/:name', (req, res) => {
+app.get('/lolo/:name', (req, res) => {
 	const name = req.params.name;
 	res.send(`Hello ${name}`);
 });
@@ -45,5 +45,5 @@ app.use(({ res }) => {
 	res.status(404).json({ message });
 });
 
-const message = `Notre application Node est démarrée sur : http://localhost:${port}`;
+const message = `Notre Api Pokemon est démarrée sur : http://localhost:${port}`;
 app.listen(port, () => console.log(message));

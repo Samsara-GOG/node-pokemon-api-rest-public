@@ -135,7 +135,7 @@ module.exports = (sequelize, DataTypes) => {
 					notEmpty: {
 						msg: 'La couleur ne peut pas être vide.',
 					},
-					notNull: { msg: 'Le nom est une propriété requise' },
+					notNull: { msg: 'La couleur est une propriété requise' },
 				},
 			},
 		},

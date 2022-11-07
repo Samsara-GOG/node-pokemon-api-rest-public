@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 const auth = require('../auth/auth');
 
 module.exports = (app) => {
-	app.get('/api-pokemon/api/pokemons', auth, (req, res) => {
+	app.get('/api/pokemons', auth, (req, res) => {
 		if (req.query.name) {
 			const name = req.query.name;
 			const limit = parseInt(req.query.limit) || 5;
@@ -20,6 +20,7 @@ module.exports = (app) => {
 						[Op.like]: `%${name}%`,
 					},
 				},
+
 				limit: limit,
 				order: ['name'],
 			}).then(({ count, rows }) => {
