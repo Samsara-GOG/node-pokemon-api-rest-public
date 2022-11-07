@@ -25,7 +25,7 @@ Je décris plus bas l'exécution des requêtes.
 ## Lancer le serveur en production
 `npm run start`
 
-***
+_____________________________
 
 L'exécution du projet nécessite au préalable la création d'une Base De Données SQL, afin de récupérer des infos de connexion pour Sequelize (nom et dialecte de BDD, nom et mot de passe de l'utilisateur BDD, etc.).
 
@@ -153,13 +153,14 @@ POST /api/login
 Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
 En mode de développement, ce token est récupérable via l'API avec une requête POST sur   
   `https://localhost:3000/api-pokemon/api/login`,
-  avec le nom d'utilisateur défini par la valeur de `LOGIN_USERNAME_DEV` (fichier .env) `pikachu` et le mot de passe par la valeur de `LOGIN_PASSWORD_DEV`.
-  Ici, dans notre exemple nous utilions `pikachu` pour les deux pour la démonstration. 
-  Il est déconseillé de faire de même pour votre projet.
+  avec le nom d'utilisateur défini par la valeur de `LOGIN_USERNAME_DEV` (fichier .env) et le mot de passe définie par la valeur de `LOGIN_PASSWORD_DEV`.
+  
+Ici, dans notre exemple nous utilions `pikachu` pour les deux pour la démonstration. 
+Il est déconseillé de faire de même pour votre projet.
 
 Par exemple, en JavaScript via Node.js :
 
-I) on construit cette requête :
+I) On construit cette requête :
 
 ```
  const request = require('request');
