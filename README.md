@@ -48,8 +48,8 @@ Exemple : (ici avec des valeurs définies pour le développement)
     DB_DIALECT_DEV="mariadb"
     DB_TIMEZONE_DEV="Etc/GMT-2"
 
-Si vous avez besoin de travailler dans un environnement dev ou prod,
-modifier cette variable :
+Si vous avez besoin de travailler dans un environnement de développement ou de production,
+modifier cette variable d'environnement :
 
 `NODE_ENV="production"`,
 
@@ -59,23 +59,29 @@ par :
 
 et inversement.
 
-La valeur de la variable `CUSTOM_PRIVATE_KEY` est utilisée par l'Api en tant que chaîne secrète pour créer et décoder le token d'authentification à la création/connexion de l'utilisateur. Il est donc conseillé de choisir une valeur de chaînes assez complexe pour sécuriser le mot de passe.
+La valeur de la variable d'environnement `CUSTOM_PRIVATE_KEY` est utilisée par l'Api en tant que chaîne secrète pour créer et décoder le token d'authentification à la création/connexion de l'utilisateur. Il est donc conseillé de choisir une valeur de chaînes assez complexe pour sécuriser le token.
 
 Exemple de valeur :  
-  `CUSTOM_PRIVATE_KEY = "r*RMTL#aWy$uhPUw@^i^A9*uki8z9$DC^*nc3#!R@fc"`  
+  `CUSTOM_PRIVATE_KEY="r*RMTL#aWy$uhPUw@^i^A9*uki8z9$DC^*nc3#!R@fc"`  
 
-La valeur de la variable `LOGIN_USERNAME_DEV` et sa consoeur `..._PROD` sert à créer automatiquement un compte utilisateur authentifié à l'initiation de la base de données, et à tester l'authentification pour l'exécution des requêtes.
+Les valeurs des variables `LOGIN_USERNAME_DEV`, `LOGIN_PASSWORD_DEV` et leurs variantes `_PROD` servent à créer automatiquement un compte utilisateur authentifié à l'initiation de la base de données (génération du token crypté), et à tester l'authentification pour l'exécution des requêtes. 
+Veillez donc bien à définir et à noter ces valeurs pour vos tests de requêtes.
 
 Exemple de valeur :   
-  `LOGIN_USERNAME_DEV = "pikachu"`  
+  `LOGIN_USERNAME_DEV="pikachu"`    
+  `LOGIN_PASSWORD_DEV="motDePasse"`
 
 ## Début du contenu du fichier .env à créer :
 ```
 NODE_ENV="development"
 
-CUSTOM_PRIVATE_KEY = "[cléPersonnalisée]"
-LOGIN_USERNAME_DEV="[usernameTest]"
-LOGIN_USERNAME_PROD="[usernameTest]"
+CUSTOM_PRIVATE_KEY="[cléPersonnalisée]"
+
+LOGIN_USERNAME_DEV="[usernameDev]"
+LOGIN_PASSWORD_DEV="[passwordDev]"
+
+LOGIN_USERNAME_PROD="[usernameProd]"
+LOGIN_PASSWORD_PROD="[passwordProd]"
 
 DB_HOST_DEV="localhost"
 DB_NAME_DEV="[dbNameDev]"
@@ -146,7 +152,9 @@ POST /api/login
 Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
 En mode de développement, ce token est récupérable via l'API avec une requête POST sur   
   `https://localhost:3000/api-pokemon/api/login`,
-  avec l'utilisateur `pikachu` et le mot de passe `pikachu`.
+  avec le nom d'utilisateur défini par la valeur de `LOGIN_USERNAME_DEV` (fichier .env) `pikachu` et le mot de passe par la valeur de `LOGIN_PASSWORD_DEV`.
+  Ici, dans notre exemple nous utilions `pikachu` pour les deux pour la démonstration. 
+  Il est déconseillé de faire de même pour votre projet.
 
 Par exemple, en JavaScript via Node.js :
 
