@@ -1,6 +1,6 @@
 # node-pokemon-api-rest-public
 
-Api Rest complète fonctionnant avec une base de données SQL contenant 12 pokemons de départ.
+Api Rest complète fonctionnant avec une base de données SQL MariaDB contenant 12 pokemons de départ.
 
 Api réalisée en JavaScript, sous Express/Node.js, avec l'ORM Sequelize pour gérer les échanges avec la base de données SQL.
 
