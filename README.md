@@ -152,7 +152,7 @@ POST /api/login
 
 Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
 En mode de développement, ce token est récupérable via l'API avec une requête POST sur   
-  `https://localhost:3000/api-pokemon/api/login`,
+  `https://localhost:3000/api/login`,
   avec le nom d'utilisateur défini par la valeur de `LOGIN_USERNAME_DEV` (fichier .env) et le mot de passe définie par la valeur de `LOGIN_PASSWORD_DEV`.
   
 Ici, dans notre exemple nous utilions `pikachu` pour les deux pour la démonstration. 
