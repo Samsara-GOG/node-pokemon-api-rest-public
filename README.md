@@ -203,7 +203,7 @@ I') Ou plus pratique sur Postman :
 8. Copier le token qui s'affiche dans la réponse
 
 En image :  
-![Requête POST /api/login sous Postman](https://samsara.live/images/requete_post-login.jpg)
+![Requête POST /api/login sous Postman](https://samsara.live/images/pokemon/api/request_post-login.jpg)
 
 => si la connexion est réussie :
 
@@ -223,4 +223,4 @@ En image :
 
 => Vous devez récupérer le token et l'inscrire dans le header de toutes vos requêtes sous cette forme :
 
-![Requête avec token](https://samsara.live/images/requete_header-token.jpg)
+![Requête avec token](https://samsara.live/images/pokemon/api/request_header-token.jpg)
