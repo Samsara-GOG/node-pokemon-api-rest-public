@@ -33,6 +33,7 @@ if (process.env.NODE_ENV === 'development') {
 sequelize.initDb();
 
 app.get('/', (req, res) => {
+	res.set('Access-Control-Allow-Origin', '*');
 	res.json({ message: 'Welcome to API Pokemon.' }); // test message
 });
 
