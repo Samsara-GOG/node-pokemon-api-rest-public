@@ -9,9 +9,13 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+
+/* // Désactivation temporaire pour tester
 const corsOptions = {
 	origin: `https://localhost:${port}`,
 };
+*/
 
 if (process.env.NODE_ENV === 'development') {
 	const morgan = require('morgan');
@@ -21,7 +25,7 @@ if (process.env.NODE_ENV === 'development') {
 		.use(favicon(__dirname + '/favicon.ico'))
 		.use(express.urlencoded({ extended: true }))
 		.use(express.json())
-		.use(cors(corsOptions));
+		.use(cors(/*corsOptions*/));
 } else {
 	app
 		.use(favicon(__dirname + '/favicon.ico'))
