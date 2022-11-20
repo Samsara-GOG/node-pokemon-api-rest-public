@@ -8,10 +8,13 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+
+/*
 const corsOptions = {
-	origin: `https://localhost:${port}`,
+	origin: `https://localhost:${PORT}`,
 };
+*/
 
 if (process.env.NODE_ENV === 'development') {
 	const morgan = require('morgan');
@@ -21,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 		.use(favicon(__dirname + '/favicon.ico'))
 		.use(express.urlencoded({ extended: true }))
 		.use(express.json())
-		.use(cors(corsOptions));
+		.use(cors(/*corsOptions*/));
 } else {
 	app
 		.use(favicon(__dirname + '/favicon.ico'))
@@ -57,5 +60,5 @@ app.use(({ res }) => {
 	res.status(404).json({ message });
 });
 
-const message = `Notre Api Pokemon est démarrée sur : http://localhost:${port}`;
-app.listen(port, () => console.log(message));
+const message = `Notre Api Pokemon est démarrée sur : http://localhost:${PORT}`;
+app.listen(PORT, () => console.log(message));
