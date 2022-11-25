@@ -29,14 +29,14 @@ if (process.env.NODE_ENV === 'development') {
 		.use(favicon(__dirname + '/favicon.ico'))
 		.use(express.urlencoded({ extended: true }))
 		.use(express.json())
-		.use(cors(corsOptions));
+		.use(cors(/*corsOptions*/));
 }
 
 sequelize.initDb();
 
 app.get('/', (req, res) => {
 	res.set('Access-Control-Allow-Origin', '*');
-	res.json({ message: 'Welcome to API Pokemon.' }); // test message
+	res.json({ message: 'Welcome to API Pokemon.' });
 });
 
 app.get('/lolo/:name', (req, res) => {
