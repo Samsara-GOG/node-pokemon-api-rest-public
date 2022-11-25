@@ -21,12 +21,12 @@ Exemples de messages d'erreur :
 
  - **GET** `/api/pokemons` (**Erreur 401: pas de token**)
 <p align="center">
-    <img src="https://samsara.live/images/pokemon/api/request_401_no_token.jpg" alt="Requête GET /api/pokemons sans token sous Postman" height="300">
+    <img src="https://samsara.live/images/pokemon/api/request_401_no_token.jpg" alt="Requête GET /api/pokemons sans token sous Postman" height="200">
 </p>
 
  - **POST** `/api/login/test` (**Erreur 404: url inexistante**)
 <p align="center">
-    <img src="https://samsara.live/images/pokemon/api/request_404.jpg" alt="Requête POST /api/login/test sous Postman" height="300">
+    <img src="https://samsara.live/images/pokemon/api/request_404.jpg" alt="Requête POST /api/login/test sous Postman" height="200">
 </p>
 
  ***
@@ -117,7 +117,12 @@ I') Ou plus pratique sur Postman :
 8. Copier le token qui s'affiche dans la réponse
 
 En image :  
-![Requête POST /api/login sous Postman](https://samsara.live/images/pokemon/api/request_post-login.jpg)
+
+ - **POST** `/api/login`
+ 
+<p align="center">
+<img src="https://samsara.live/images/pokemon/api/request_post-login.jpg" alt="Requête OST /api/login sous Postman" height="300">
+</p>
 
 => si la connexion est réussie :
 
