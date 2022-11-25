@@ -1,7 +1,6 @@
 # node-pokemon-api-rest-public
 
 Api Rest complète fonctionnant avec une base de données SQL MariaDB contenant 12 pokemons de départ.
-
 Api réalisée en JavaScript, sous Express/Node.js, avec l'ORM Sequelize pour gérer les échanges avec la base de données SQL.
 
 L'Api est directement testable en ligne avec un outil comme Postman avec ces urls/routes :
@@ -10,7 +9,137 @@ https://samsara.live/api-pokemon/api/pokemons
 https://samsara.live/api-pokemon/api/pokemons/:id  
 https://samsara.live/api-pokemon/api/login
 
-Je décris plus bas l'exécution des requêtes.
+## Description de l'utilisation de l'API
+
+Après avoir entré un identifiant et un mot de passe reconnus par l'Api, on récupère un token crypté.  
+Ce token permet d'envoyer des requêtes authentifiées à l'API, et ainsi accéder à la récupération de tous les pokémons de la base de données, ou un seul, le modifier à sa guise ou en encore le supprimer.  
+On peut aussi en créer un de toutes pièces, en respectant des règles de validation établis avec Sequelize côté modèle.
+
+L'Api informe l'utilisateur à chaque requête erronée, avec une validation métier et des contraintes, en précisant à chaque fois le type d'erreur (400, 401, 404, 500, 501) pour informer au maximum l'utilisateur et l'aider à corriger sa requête.
+
+Exemples de messages d'erreur :
+
+ - **GET** `/api/pokemons` (**Erreur 401: pas de token**)
+<p align="center">
+    <img src="https://samsara.live/images/pokemon/api/request_401_no_token.jpg" alt="Requête GET /api/pokemons sans token sous Postman" height="300">
+</p>
+
+ - **POST** `/api/login/test` (**Erreur 404: url inexistante**)
+<p align="center">
+    <img src="https://samsara.live/images/pokemon/api/request_404.jpg" alt="Requête POST /api/login/test sous Postman" height="300">
+</p>
+
+ ***
+Les routes pour les requêtes :
+
+ - **GET** `/api/pokemons`
+<p align="center">
+    <img src="https://samsara.live/images/pokemon/api/request_get-all-token.jpg" alt="Requête GET /api/pokemons sous Postman" height="300">
+</p>
+
+ - **GET** `/api/pokemons/:id`
+<p align="center">
+    <img src="https://samsara.live/images/pokemon/api/request_get_pokemon-id.jpg" alt="Requête GET /api/pokemons/:id sous Postman" height="300">
+</p>
+
+ - **PUT** `/api/pokemons/:id`
+<p align="center">
+    <img src="https://samsara.live/images/pokemon/api/request_put_pokemon-id.jpg" alt="Requête PUT /api/pokemons/:id sous Postman" height="300">
+</p>
+
+ - **DELETE** `/api/pokemons/:id`
+<p align="center">
+    <img src="https://samsara.live/images/pokemon/api/request_delete_pokemon-id.jpg" alt="Requête DELETE /api/pokemons/:id" height="300">
+</p>
+
+- **POST** `/api/pokemons`
+<p align="center">
+<img src="https://samsara.live/images/pokemon/api/request_post_pokemon.jpg" alt="Requête POST /api/pokemons sous Postman" height="300">
+</p>
+
+ - **POST** `/api/login`
+<p align="center">
+<img src="https://samsara.live/images/pokemon/api/request_post-login.jpg" alt="Requête OST /api/login sous Postman" height="300">
+</p>
+
+ ***
+
+Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
+En mode de développement, ce token est récupérable via l'API avec une requête POST sur   
+  `https://localhost:3000/api/login`,
+  avec le nom d'utilisateur défini par la valeur de `LOGIN_USERNAME_DEV` (fichier .env) et le mot de passe définie par la valeur de `LOGIN_PASSWORD_DEV`.
+  
+Ici, dans notre exemple nous utilisons `pikachu` pour les deux pour la démonstration. 
+Il est déconseillé de faire de même pour votre projet.
+
+Par exemple, en JavaScript via Node.js :
+
+I) On construit une requête sous cette forme :
+
+```
+ const request = require('request');
+
+ const options = {
+   'method': 'POST',
+   'url': 'https://localhost:3000/api/login',
+   'headers': {
+    'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "username": "[login]",    // pikachu
+      "password": "[password]"  // pikachu
+    })
+ };
+
+  request(options, function (error, response) {
+      if (error) throw new Error(error);
+      console.log(response.body);
+  });
+```
+
+I') Ou plus pratique sur Postman :
+
+1. Choisir Requête : **POST**
+2. Entrer cette url : [https://localhost:3000/api/pokemons](https://localhost:3000/api/pokemons)
+3. Sélectionner l'onglet **Body**
+4. Sélectionner le bouton radio **Raw**
+5. Cliquer sur le formattage **JSON**
+6. Entrez dans le grand champ vide:
+
+```
+{
+   "username": "pikachu",
+   "password": "pikachu"
+}
+```
+
+7. Cliquez sur **Send** pour envoyer la requête
+8. Copier le token qui s'affiche dans la réponse
+
+En image :  
+![Requête POST /api/login sous Postman](https://samsara.live/images/pokemon/api/request_post-login.jpg)
+
+=> si la connexion est réussie :
+
+```
+{
+  "message": "L'utilisateur a été connecté avec succès.",
+  "data": {
+      "id": 1,
+      "username": "pikachu",
+      "password": "$2b$10$3uguHpWx5WP/j8LLISHR9uucy8lHxLQTuH63krzj8n10IdfCIhcPy",
+      "createdAt": "2022-11-05T16:05:04.000Z",
+      "updatedAt": "2022-11-05T16:05:04.000Z"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NzY2NDQxMywiZXhwIjoxNjY3NzUwODEzfQ.CdKpCYDX1clyrYCNeXtIi4WNjlICg4jU1i9ElDVXQx4"
+}
+```
+
+=> Vous devez récupérer le token et l'inscrire dans le header de toutes vos requêtes sous cette forme :
+
+![Requête avec token](https://samsara.live/images/pokemon/api/request_header-token.jpg)
+
+ ***
 
 ## Récupération du projet de l'Api Rest Pokemon
 
@@ -25,8 +154,8 @@ Je décris plus bas l'exécution des requêtes.
 ## Lancer le serveur en production
 `npm run start`
 
-_____________________________
-
+ ***
+ 
 L'exécution du projet nécessite au préalable la création d'une Base De Données SQL, afin de récupérer des infos de connexion pour Sequelize (nom et dialecte de BDD, nom et mot de passe de l'utilisateur BDD, etc.).
 
 Et on utilise un fichier .env pour enregistrer et sécuriser ces données.
@@ -121,106 +250,3 @@ Les requêtes de routage concernées avec leurs fichiers :
 - `app.get()` sur `./src/routes/findPokemonByPk.js`,
 
 - `app.post()` sur `./src/routes/login.js.js`
-
-*********
-
-## Description de l'utilisation de l'API
-
-Après avoir entré un identifiant et un mot de passe reconnus par l'Api, on récupère un token crypté.  
-Ce token permet d'envoyer des requêtes authentifiées à l'API, et ainsi accéder à la récupération de tous les pokémons de la base de données, ou un seul, le modifier à sa guise ou en encore le supprimer.  
-On peut aussi en créer un de toutes pièces, en respectant des règles de validation établis avec Sequelize côté modèle.
-
-L'Api informe l'utilisateur à chaque requête erronée, avec une validation métier et des contraintes, en précisant à chaque fois le type d'erreur (400, 401, 404, 500, 501) pour informer au maximum l'utilisateur et l'aider à corriger sa requête.
-
-Les routes pour les requêtes :
-
-(images à venir)
-
-GET /api/pokemons
-
-GET /api/pokemons/:id
-
-PUT /api/pokemons/:id
-
-DELETE /api/pokemons/:id
-
-POST /api/pokemons
-
-POST /api/login
-
-      ****************
-
-Les requêtes sur cette API Rest sont disponibles uniquement après l'obtention d'un token.  
-En mode de développement, ce token est récupérable via l'API avec une requête POST sur   
-  `https://localhost:3000/api/login`,
-  avec le nom d'utilisateur défini par la valeur de `LOGIN_USERNAME_DEV` (fichier .env) et le mot de passe définie par la valeur de `LOGIN_PASSWORD_DEV`.
-  
-Ici, dans notre exemple nous utilions `pikachu` pour les deux pour la démonstration. 
-Il est déconseillé de faire de même pour votre projet.
-
-Par exemple, en JavaScript via Node.js :
-
-I) On construit cette requête :
-
-```
- const request = require('request');
-
- const options = {
-   'method': 'POST',
-   'url': 'https://localhost:3000/api/login',
-   'headers': {
-    'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      "username": "[login]",    // pikachu
-      "password": "[password]"  // pikachu
-    })
- };
-
-  request(options, function (error, response) {
-      if (error) throw new Error(error);
-      console.log(response.body);
-  });
-```
-
-I') Ou plus pratique sur Postman :
-
-1. Choisir Requête : **POST**
-2. Entrer cette url : [https://localhost:3000/api/pokemons](https://localhost:3000/api/pokemons)
-3. Sélectionner l'onglet **Body**
-4. Sélectionner sur le bouton radio **Raw**
-5. Cliquer sur le formattage **JSON**
-6. Entrez dans le grand champ vide:
-
-```
-{
-   "username": "pikachu",
-   "password": "pikachu"
-}
-```
-
-7. Cliquez sur **Send** pour envoyer la requête
-8. Copier le token qui s'affiche dans la réponse
-
-En image :  
-![Requête POST /api/login sous Postman](https://samsara.live/images/pokemon/api/request_post-login.jpg)
-
-=> si la connexion est réussie :
-
-```
-{
-  "message": "L'utilisateur a été connecté avec succès.",
-  "data": {
-      "id": 1,
-      "username": "pikachu",
-      "password": "$2b$10$3uguHpWx5WP/j8LLISHR9uucy8lHxLQTuH63krzj8n10IdfCIhcPy",
-      "createdAt": "2022-11-05T16:05:04.000Z",
-      "updatedAt": "2022-11-05T16:05:04.000Z"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NzY2NDQxMywiZXhwIjoxNjY3NzUwODEzfQ.CdKpCYDX1clyrYCNeXtIi4WNjlICg4jU1i9ElDVXQx4"
-}
-```
-
-=> Vous devez récupérer le token et l'inscrire dans le header de toutes vos requêtes sous cette forme :
-
-![Requête avec token](https://samsara.live/images/pokemon/api/request_header-token.jpg)
